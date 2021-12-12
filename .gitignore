@@ -37,3 +37,4 @@ build/
 
 ### .not ###
 *.not
+/bin/
