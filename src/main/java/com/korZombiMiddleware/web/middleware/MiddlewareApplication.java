@@ -28,7 +28,7 @@ import com.korZombiMiddleware.web.middleware.repository.TestRepository;
 
 //@EntityScan(basePackages="com.korZombiMiddleware.web.entity.TestEntity")
 //@EnableJpaRepositories(basePackages="com.korZombiMiddleware.web.repository.TestRepository")
-@SpringBootApplication(scanBasePackages = {"com.korZombiMiddleware"})
+@SpringBootApplication//(scanBasePackages = {"com.korZombiMiddleware"})
 public class MiddlewareApplication implements ApplicationRunner {
 	
 	//@Autowired
