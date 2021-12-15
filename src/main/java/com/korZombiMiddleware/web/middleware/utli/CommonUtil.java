@@ -26,7 +26,7 @@ import org.json.simple.parser.ParseException;
 public class CommonUtil {
 
 	
-	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needReplaceThisText) throws FileNotFoundException, IOException {
+	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needRemoveThisText) throws FileNotFoundException, IOException {
 
 		ArrayList<List<String>> result = null;//new ArrayList<>();
         BufferedReader reader = null;//new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
@@ -36,8 +36,8 @@ public class CommonUtil {
 	        String line;
 	        while((line=reader.readLine()) != null) {
 	        	//System.out.println(line);
-	        	if(needReplaceThisText != null) {
-	        		line = line.replace(needReplaceThisText, "");
+	        	if(needRemoveThisText != null) {
+	        		line = line.replace(needRemoveThisText, "");
 	        	}
 	        													//"\",\"" ""안에 들어간 separator은 무시
 	        	result.add(Arrays.asList(line.split(separator+"(?=([^\"]*\"[^\"]*\")*[^\"]*$*)")));
