@@ -25,6 +25,10 @@ import org.json.simple.parser.ParseException;
 
 public class CommonUtil {
 
+
+	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needRemoveThisText) throws FileNotFoundException, IOException {
+		return readCsv(path, encodeType, separator, needRemoveThisText, null);
+	}
 	
 	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needRemoveThisText, List<String> columnList) throws FileNotFoundException, IOException {
 
@@ -32,20 +36,17 @@ public class CommonUtil {
         BufferedReader reader = null;//new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
         try {
         	result = new ArrayList<List<String>>();
-        	reader = new BufferedReader(new InputStreamReader(new FileInputStream(path),encodeType));
+        	reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
 	        String line;
-	        int firstLoop = 1;
 	        if(columnList != null) {
 	        	result.add(columnList);
 	        	reader.readLine();
-	        	firstLoop = 0;
 	        }
 	        else {
 	        	
 	        }
 	        while((line=reader.readLine()) != null) {
 	        	//System.out.println(line);
-	        	if(firstLoop == 0) {
 	        	if(needRemoveThisText != null) {
 	        		line = line.replace(needRemoveThisText, "");
 	        	}
@@ -55,9 +56,7 @@ public class CommonUtil {
 	        	}
 	        													//"\",\"" ""안에 들어간 separator은 무시
 	        	result.add(Arrays.asList(lineText));
-	        	}else {
-	        		firstLoop = 0;
-	        	}
+	        	
 	        }
         }catch(Exception e) {
         	e.printStackTrace();
