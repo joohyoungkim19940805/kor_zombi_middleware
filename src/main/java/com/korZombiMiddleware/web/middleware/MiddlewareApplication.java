@@ -1,5 +1,7 @@
 package com.korZombiMiddleware.web.middleware;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -19,8 +21,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.korZombiMiddleware.web.middleware.entity.AreaEntity;
 import com.korZombiMiddleware.web.middleware.entity.TestEntity;
+import com.korZombiMiddleware.web.middleware.repository.AreaRepository;
 import com.korZombiMiddleware.web.middleware.repository.TestRepository;
+import com.korZombiMiddleware.web.middleware.utli.CommonUtil;
 
 /*
 
@@ -37,7 +42,9 @@ public class MiddlewareApplication implements ApplicationRunner {
     //private DataSource dataSource;
     @Autowired
     private TestRepository testRepository;
-    
+    @Autowired
+    private AreaRepository areaRepository;
+    /*
     @Override
     public void run(ApplicationArguments args) {
     	try {
@@ -53,9 +60,16 @@ public class MiddlewareApplication implements ApplicationRunner {
     	catch(Exception e){
     		e.printStackTrace();
     	}
+    }*/
+    
+    @Override
+    public void run(ApplicationArguments args) throws FileNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    	List<String> columnNameList = new ArrayList<String>() {{add("area"); add("area_no");}};
+    	AreaEntity areaEntity = new AreaEntity();
+    	areaRepository.saveAll(new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")", new AreaEntity().columnNameList(), AreaEntity.class));
     }
-	
-	/*
+    
+    /*
 	@Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired

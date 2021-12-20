@@ -6,7 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -18,45 +19,62 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.korZombiMiddleware.web.middleware.entity.AreaEntity;
+
 public class CommonUtil {
 
 
-	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needRemoveThisText) throws FileNotFoundException, IOException {
-		return readCsv(path, encodeType, separator, needRemoveThisText, null);
+	/*
+	public <T> T transEntity(Class<T> targetClass, List<?> data) throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
+		//Constructor<?> constructor = targetClass.getClass().getDeclaredConstructor();
+		//constructor.newInstance();
+		T result = targetClass.newInstance();
+		BeanUtils.populate(result, (Map<String, ? extends Object>) data);
+		return result;
 	}
-	
-	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needRemoveThisText, List<String> columnList) throws FileNotFoundException, IOException {
+	*/
+	//public ArrayList<Map<String, ?>> readCsv(String path, String encodeType, String separator, String needRemoveThisText) throws FileNotFoundException, IOException {
+		//return readCsv(path, encodeType, separator, needRemoveThisText, null);
+	//}
+	public <T> ArrayList<T> readCsv(String path, String encodeType, String separator, String needRemoveThisText, List<String> columnList, Class<T> targetClass) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException {
 
-		ArrayList<List<String>> result = null;//new ArrayList<>();
+		ArrayList<T> result = null;//new ArrayList<>();
         BufferedReader reader = null;//new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
+
+        
         try {
-        	result = new ArrayList<List<String>>();
+        	result = new ArrayList<T>();
         	reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
 	        String line;
 	        if(columnList != null) {
-	        	result.add(columnList);
 	        	reader.readLine();
 	        }
-	        else {
-	        	
-	        }
+	        
 	        while((line=reader.readLine()) != null) {
+	            T item = targetClass.getDeclaredConstructor().newInstance();
+	        	Map<String, Object> map = new HashMap<String, Object>();
 	        	//System.out.println(line);
 	        	if(needRemoveThisText != null) {
 	        		line = line.replace(needRemoveThisText, "");
 	        	}
+	        	//"\",\"" ""안에 들어간 separator은 무시
 	        	String[] lineText = line.split(separator+"(?=([^\"]*\"[^\"]*\")*[^\"]*$*)");
+	        	
 	        	for(int i = 0 ; i < lineText.length ; i++) {
 	        		lineText[i] = lineText[i].trim();
+	        		if(columnList.size() == lineText.length) { 
+	        			map.put(columnList.get(i), lineText[i]);
+	        		}
 	        	}
-	        													//"\",\"" ""안에 들어간 separator은 무시
-	        	result.add(Arrays.asList(lineText));
-	        	
+	        	BeanUtils.populate(item, map);
+	        	result.add(item);											
+	        	//result.add(Arrays.asList(lineText));
 	        }
         }catch(Exception e) {
         	e.printStackTrace();
@@ -189,15 +207,18 @@ public class CommonUtil {
 	}
 	
 	
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
 		String test = "test";
-		List<String> columnNameList = new ArrayList<String>() {{add("area"); add("area_no");}};
-		ArrayList<List<String>> test1 = new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")", columnNameList);
+		ArrayList<AreaEntity> test1 = new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")", new AreaEntity().columnNameList(), AreaEntity.class);
 		//ArrayList<List<String>> test1 = new TestUtil().readCsv("src/main/resources/my_test.csv","UTF-8");
-		for(List<String> test2 : test1) {
+		for(AreaEntity test2 : test1) {
 			System.out.println(test2);
-			//System.out.println( Arrays.toString((String[])test2.get(0)) );
+			System.out.println(test2.getArea());
+			System.out.println(test2.getArea_no());
 		}
+		
+		//AreaEntity areaEntity = new CommonUtil().transEntity(AreaEntity.class, test1);
+		//System.out.println(areaEntity.getArea());
 	}
 
 	//public  appendNumber(long teagetNumber, int needZero, int digit) {
