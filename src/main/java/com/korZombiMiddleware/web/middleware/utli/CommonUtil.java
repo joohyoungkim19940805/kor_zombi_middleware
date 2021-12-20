@@ -26,7 +26,7 @@ import org.json.simple.parser.ParseException;
 public class CommonUtil {
 
 	
-	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needRemoveThisText) throws FileNotFoundException, IOException {
+	public ArrayList<List<String>> readCsv(String path, String encodeType, String separator, String needRemoveThisText, List<String> columnList) throws FileNotFoundException, IOException {
 
 		ArrayList<List<String>> result = null;//new ArrayList<>();
         BufferedReader reader = null;//new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
@@ -34,13 +34,30 @@ public class CommonUtil {
         	result = new ArrayList<List<String>>();
         	reader = new BufferedReader(new InputStreamReader(new FileInputStream(path),encodeType));
 	        String line;
+	        int firstLoop = 1;
+	        if(columnList != null) {
+	        	result.add(columnList);
+	        	reader.readLine();
+	        	firstLoop = 0;
+	        }
+	        else {
+	        	
+	        }
 	        while((line=reader.readLine()) != null) {
 	        	//System.out.println(line);
+	        	if(firstLoop == 0) {
 	        	if(needRemoveThisText != null) {
 	        		line = line.replace(needRemoveThisText, "");
 	        	}
+	        	String[] lineText = line.split(separator+"(?=([^\"]*\"[^\"]*\")*[^\"]*$*)");
+	        	for(int i = 0 ; i < lineText.length ; i++) {
+	        		lineText[i] = lineText[i].trim();
+	        	}
 	        													//"\",\"" ""안에 들어간 separator은 무시
-	        	result.add(Arrays.asList(line.split(separator+"(?=([^\"]*\"[^\"]*\")*[^\"]*$*)")));
+	        	result.add(Arrays.asList(lineText));
+	        	}else {
+	        		firstLoop = 0;
+	        	}
 	        }
         }catch(Exception e) {
         	e.printStackTrace();
@@ -175,7 +192,8 @@ public class CommonUtil {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		String test = "test";
-		ArrayList<List<String>> test1 = new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")");
+		List<String> columnNameList = new ArrayList<String>() {{add("area"); add("area_no");}};
+		ArrayList<List<String>> test1 = new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")", columnNameList);
 		//ArrayList<List<String>> test1 = new TestUtil().readCsv("src/main/resources/my_test.csv","UTF-8");
 		for(List<String> test2 : test1) {
 			System.out.println(test2);
