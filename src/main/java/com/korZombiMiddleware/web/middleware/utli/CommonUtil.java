@@ -25,7 +25,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.korZombiMiddleware.web.middleware.entity.AreaEntity;
+import com.korZombiMiddleware.web.middleware.entity.AreaNameEntity;
+import com.korZombiMiddleware.web.middleware.entity.AreaSizeEntity;
 
 public class CommonUtil {
 
@@ -70,6 +71,9 @@ public class CommonUtil {
 	        		lineText[i] = lineText[i].trim();
 	        		if(columnList.size() == lineText.length) { 
 	        			map.put(columnList.get(i), lineText[i]);
+	        		}
+	        		else {
+	        			throw new Exception("column 매핑 실패 : " + " targetColumnList Size는 "+ columnList.size() + " 이나 csv의 column size는 " + lineText.length + " 입니다.");
 	        		}
 	        	}
 	        	BeanUtils.populate(item, map);
@@ -209,12 +213,12 @@ public class CommonUtil {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
 		String test = "test";
-		ArrayList<AreaEntity> test1 = new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")", new AreaEntity().columnNameList(), AreaEntity.class);
+		ArrayList<AreaSizeEntity> test1 = new CommonUtil().readCsv("src/main/resources/kor_area_size.csv","UTF-8", ",", null, new AreaSizeEntity().columnNameList(), AreaSizeEntity.class);
 		//ArrayList<List<String>> test1 = new TestUtil().readCsv("src/main/resources/my_test.csv","UTF-8");
-		for(AreaEntity test2 : test1) {
+		for(AreaSizeEntity test2 : test1) {
 			System.out.println(test2);
-			System.out.println(test2.getArea());
-			System.out.println(test2.getArea_no());
+			System.out.println(test2.getArea_name());
+			System.out.println(test2.getArea_size());
 		}
 		
 		//AreaEntity areaEntity = new CommonUtil().transEntity(AreaEntity.class, test1);

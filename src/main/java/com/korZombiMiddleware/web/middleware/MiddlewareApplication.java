@@ -21,9 +21,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.korZombiMiddleware.web.middleware.entity.AreaEntity;
+import com.korZombiMiddleware.web.middleware.entity.AreaNameEntity;
+import com.korZombiMiddleware.web.middleware.entity.AreaSizeEntity;
 import com.korZombiMiddleware.web.middleware.entity.TestEntity;
-import com.korZombiMiddleware.web.middleware.repository.AreaRepository;
+import com.korZombiMiddleware.web.middleware.repository.AreaNameRepository;
+import com.korZombiMiddleware.web.middleware.repository.AreaSizeRepository;
 import com.korZombiMiddleware.web.middleware.repository.TestRepository;
 import com.korZombiMiddleware.web.middleware.utli.CommonUtil;
 
@@ -43,30 +45,21 @@ public class MiddlewareApplication implements ApplicationRunner {
     @Autowired
     private TestRepository testRepository;
     @Autowired
-    private AreaRepository areaRepository;
-    /*
-    @Override
-    public void run(ApplicationArguments args) {
-    	try {
-	    	String[] my_name = "abcdefghijklnmopqrstuvwxyz".split("");
-	    	List<TestEntity> test_entity_list = new ArrayList<TestEntity>();
-	    	
-	    	for (int i = 0 ; i < my_name.length ; i++) {
-	    		test_entity_list.add(new TestEntity( (my_name.length - i), (my_name[i]), (i+1) ));
-	    	}
-	    	
-	    	testRepository.saveAll(test_entity_list);
-    	}
-    	catch(Exception e){
-    		e.printStackTrace();
-    	}
-    }*/
+    private AreaNameRepository areaNameRepository;
+    private void kor_area_name() throws FileNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    	areaNameRepository.saveAll(new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")", new AreaNameEntity().columnNameList(), AreaNameEntity.class));
+    }
+    
+    @Autowired
+    private AreaSizeRepository areaSizeRepository;
+    private void kor_area_size() throws FileNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    	areaSizeRepository.saveAll(new CommonUtil().readCsv("src/main/resources/kor_area_size.csv", "UTF-8", ",", null, new AreaSizeEntity().columnNameList(), AreaSizeEntity.class));
+    } 
     
     @Override
     public void run(ApplicationArguments args) throws FileNotFoundException, InstantiationException, IllegalAccessException, IOException {
-    	List<String> columnNameList = new ArrayList<String>() {{add("area"); add("area_no");}};
-    	AreaEntity areaEntity = new AreaEntity();
-    	areaRepository.saveAll(new CommonUtil().readCsv("src/main/resources/kor_area_name.csv","UTF-8", "\\(", ")", new AreaEntity().columnNameList(), AreaEntity.class));
+    	kor_area_name();
+    	kor_area_size();
     }
     
     /*

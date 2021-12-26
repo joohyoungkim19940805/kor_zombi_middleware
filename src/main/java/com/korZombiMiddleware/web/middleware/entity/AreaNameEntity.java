@@ -14,9 +14,9 @@ import javax.persistence.Table;
  * */
 
 @Entity
-@Table(name = "kor_area")
+@Table(name = "kor_area_name")
 @Embeddable
-public class AreaEntity {
+public class AreaNameEntity {
 	
 	@Id
 	//@GeneratedValue(strategy= GenerationType.AUTO)
@@ -30,9 +30,9 @@ public class AreaEntity {
 		return new ArrayList<String>() {{add("area"); add("area_no");}};
 	}
 	
-	public AreaEntity() {}
+	public AreaNameEntity() {}
 	
-	public AreaEntity(long area_no, String area) {
+	public AreaNameEntity(long area_no, String area) {
 		this.area_no = area_no;
 		this.area = area;
 	}
