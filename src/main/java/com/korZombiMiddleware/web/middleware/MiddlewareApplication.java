@@ -22,9 +22,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.korZombiMiddleware.web.middleware.entity.AreaNameEntity;
+import com.korZombiMiddleware.web.middleware.entity.AreaPopulationEntity;
 import com.korZombiMiddleware.web.middleware.entity.AreaSizeEntity;
 import com.korZombiMiddleware.web.middleware.entity.TestEntity;
 import com.korZombiMiddleware.web.middleware.repository.AreaNameRepository;
+import com.korZombiMiddleware.web.middleware.repository.AreaPopulationRepository;
 import com.korZombiMiddleware.web.middleware.repository.AreaSizeRepository;
 import com.korZombiMiddleware.web.middleware.repository.TestRepository;
 import com.korZombiMiddleware.web.middleware.utli.CommonUtil;
@@ -44,6 +46,7 @@ public class MiddlewareApplication implements ApplicationRunner {
     //private DataSource dataSource;
     @Autowired
     private TestRepository testRepository;
+    
     @Autowired
     private AreaNameRepository areaNameRepository;
     private void kor_area_name() throws FileNotFoundException, InstantiationException, IllegalAccessException, IOException {
@@ -56,10 +59,17 @@ public class MiddlewareApplication implements ApplicationRunner {
     	areaSizeRepository.saveAll(new CommonUtil().readCsv("src/main/resources/kor_area_size.csv", "UTF-8", ",", null, new AreaSizeEntity().columnNameList(), AreaSizeEntity.class));
     } 
     
+    @Autowired
+    private AreaPopulationRepository areaPoplationRepository;
+    private void kor_area_population() throws FileNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    	areaPoplationRepository.saveAll(new CommonUtil().readCsv("src/main/resources/kor_aear_population.csv", "UTF-8", ",", null, new AreaPopulationEntity().columnNameList(), AreaPopulationEntity.class));
+    }
+    
     @Override
     public void run(ApplicationArguments args) throws FileNotFoundException, InstantiationException, IllegalAccessException, IOException {
     	kor_area_name();
     	kor_area_size();
+    	kor_area_population();
     }
     
     /*

@@ -18,6 +18,10 @@ import javax.persistence.Table;
 @Embeddable
 public class AreaNameEntity {
 	
+	/** 행정안전부 인구통계에서 인구데이터를 제거한 지역 이름 테이블 https://jumin.mois.go.kr/
+	 * csv에서 지역을 뺴고 전부 제거한다.
+	 */
+	
 	@Id
 	//@GeneratedValue(strategy= GenerationType.AUTO)
 	@Column(name = "area_no")

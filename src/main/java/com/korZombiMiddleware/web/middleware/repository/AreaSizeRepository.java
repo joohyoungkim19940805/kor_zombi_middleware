@@ -9,6 +9,6 @@ import com.korZombiMiddleware.web.middleware.entity.AreaSizeEntity;
 
 
 @Repository
-public interface AreaSizeRepository extends CrudRepository<AreaSizeEntity, Long>{
+public interface AreaSizeRepository extends CrudRepository<AreaSizeEntity, String>{
 
 }

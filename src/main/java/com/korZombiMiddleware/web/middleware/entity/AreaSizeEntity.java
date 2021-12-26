@@ -18,8 +18,9 @@ import javax.persistence.Table;
 @Embeddable
 public class AreaSizeEntity {
 	
-	//area_name	citi_name	area_size	citi_size	citi_percent	non_citi_size	non_citi_percent
-	
+	/** 한국국토정보공사 도시계획현황 https://kosis.kr/statHtml/statHtml.do?orgId=315&tblId=TX_315_2009_H1009
+	 * csv에서 0대신 -로 적혀있는 부분은 csv에서 ctrl + H 를 이용해서 0으로 변환시킨다.
+	 */
 	@Id
 	//@GeneratedValue(strategy= GenerationType.AUTO)
 	@Column(name = "area_name")
