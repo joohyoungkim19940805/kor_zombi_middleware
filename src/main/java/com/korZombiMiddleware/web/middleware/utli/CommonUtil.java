@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.simple.JSONArray;
@@ -47,7 +49,7 @@ public class CommonUtil {
 
 		ArrayList<T> result = null;//new ArrayList<>();
         BufferedReader reader = null;//new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
-
+        String setColumnList[] = null;
         
         try {
         	result = new ArrayList<T>();
@@ -55,25 +57,38 @@ public class CommonUtil {
 	        String line;
 	        if(columnList != null) {
 	        	reader.readLine();
+	        }else {
+	        	columnList = Arrays.asList( reader.readLine().split(separator+"(?=([^\"]*\"[^\"]*\")*[^\"]*$*)"))
+				        			.stream()
+									.map(x -> x.trim())
+									.map(x -> x.replaceAll("[\\(\\)\\[\\]]", ""))
+									.collect(Collectors.toList());
+	        	//System.out.print(columnList);
 	        }
 	        
 	        while((line=reader.readLine()) != null) {
 	            T item = targetClass.getDeclaredConstructor().newInstance();
 	        	Map<String, Object> map = new HashMap<String, Object>();
-	        	//System.out.println(line);
 	        	if(needRemoveThisText != null) {
 	        		line = line.replace(needRemoveThisText, "");
+	        	//마지막 문자열이 ,일 경우 인덱스 맞추기 위해 빈 문자열 넣기
 	        	}
 	        	//"\",\"" ""안에 들어간 separator은 무시
 	        	String[] lineText = line.split(separator+"(?=([^\"]*\"[^\"]*\")*[^\"]*$*)");
 	        	
 	        	for(int i = 0 ; i < lineText.length ; i++) {
 	        		lineText[i] = lineText[i].trim();
+	        		lineText[i] = lineText[i].replaceAll("[\\(\\)\\[\\]]", "");
+	        		lineText[i] = lineText[i].replaceAll("^m", ",");
+	        		
 	        		if(columnList.size() == lineText.length) { 
 	        			map.put(columnList.get(i), lineText[i]);
 	        		}
 	        		else {
-	        			throw new Exception("column 매핑 실패 : " + " targetColumnList Size는 "+ columnList.size() + " 이나 csv의 column size는 " + lineText.length + " 입니다.");
+	        			System.out.println(columnList);
+	        			System.out.println(Arrays.asList(lineText));
+	        			throw new Exception("column 매핑 실패 : targetColumnList Size는 "+ columnList.size() + " 이나 csv의 column size는 " + lineText.length + " 입니다."
+	        								+ columnList.get(columnList.size()-1) + "=======" + lineText[lineText.length-1]);
 	        		}
 	        	}
 	        	BeanUtils.populate(item, map);
@@ -212,17 +227,10 @@ public class CommonUtil {
 	
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
-		String test = "test";
-		ArrayList<AreaSizeEntity> test1 = new CommonUtil().readCsv("src/main/resources/kor_area_size.csv","UTF-8", ",", null, new AreaSizeEntity().columnNameList(), AreaSizeEntity.class);
-		//ArrayList<List<String>> test1 = new TestUtil().readCsv("src/main/resources/my_test.csv","UTF-8");
-		for(AreaSizeEntity test2 : test1) {
-			System.out.println(test2);
-			System.out.println(test2.getArea_name());
-			System.out.println(test2.getArea_size());
-		}
-		
-		//AreaEntity areaEntity = new CommonUtil().transEntity(AreaEntity.class, test1);
-		//System.out.println(areaEntity.getArea());
+		String test = "test,";
+		System.out.println(test.substring(test.length()-1));
+		test += " ";
+		System.out.println(test.split(",")[1]);
 	}
 
 	//public  appendNumber(long teagetNumber, int needZero, int digit) {
