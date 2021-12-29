@@ -60,8 +60,8 @@ public class CommonUtil {
 	        }else {
 	        	columnList = Arrays.asList( reader.readLine().split(separator+"(?=([^\"]*\"[^\"]*\")*[^\"]*$*)"))
 				        			.stream()
-									.map(x -> x.trim())
-									.map(x -> x.replaceAll("[\\(\\)\\[\\]]", ""))
+									.map(x -> x.trim().replaceAll("[\\(\\)\\[\\]]", ""))
+									//.map(x -> x.replaceAll("[\\(\\)\\[\\]]", ""))
 									.collect(Collectors.toList());
 	        	//System.out.print(columnList);
 	        }
