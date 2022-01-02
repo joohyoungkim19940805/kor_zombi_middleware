@@ -104,8 +104,10 @@ public class MiddlewareApplication implements ApplicationRunner {
     	//좌표정보x
     	//좌표정보y
     	//개방자치단체코드
+    	//소재지면적
     	for(HashMap data : data_list) {
-    		System.out.println(data);
+    		System.out.println(data.get("소재지면적"));
+    		System.out.println(data.get("소재지전체주소"));
     	}
     }
     

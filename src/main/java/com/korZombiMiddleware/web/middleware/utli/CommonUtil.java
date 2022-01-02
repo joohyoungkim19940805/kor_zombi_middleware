@@ -22,16 +22,32 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.hamcrest.core.IsInstanceOf;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.LoggerFactory;
 
 import com.korZombiMiddleware.web.middleware.entity.AreaNameEntity;
 import com.korZombiMiddleware.web.middleware.entity.AreaSizeEntity;
 
+import ch.qos.logback.classic.Level;
+
 public class CommonUtil {
 
+	private Map<String, String[]> category = new HashMap<String, String[]>(){{
+		put("금융 및 기타 행정기관", 		("은행, 우체국, 의회, 시청, 청사, 군청, 세무서, 농협").trim().split(","));
+		put("교육기관", 				("학교, 전문대, 대학, 대학원, 학원, 수련원, 수련회").trim().split(","));
+		put("기타 상업시설", 			("마트, 홈플러스, 신세계, 시장, 상가, 웨딩, 식당, 빌딩").trim().split(","));
+		put("주거지 및 주거 대여 서비스", 	("아파트, 타운, 맨션, 타워, 주차장, 호텔, 모텔").trim().split(","));
+		put("법정기관", 				("법원, 검찰").trim().split(","));
+		put("기타 지역서비스", 			("도서관, 체육관, 사회복지관, 예술회관, 복지센터, 아트센타, 사무소, 대피시설, 대피소, 역").trim().split(","));
+		put("의료서비스", 				("병원, 보건소").trim().split(","));
+		put("인명 및 치안", 			("경찰, 소방").trim().split(","));
+		put("종교시설", 				("교회, 성당, 불교").trim().split(","));
+		put("방송국", 				("방송국").trim().split(","));
+	}};
 
 	/*
 	public <T> T transEntity(Class<T> targetClass, List<?> data) throws InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
@@ -48,8 +64,7 @@ public class CommonUtil {
 	public <T> ArrayList<T> readCsv(String path, String encodeType, String separator, String needRemoveThisText, List<String> columnList, Class<T> targetClass) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException {
 
 		ArrayList<T> result = null;//new ArrayList<>();
-        BufferedReader reader = null;//new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType));
-        String setColumnList[] = null;
+        BufferedReader reader = null;//new BufferedReader(new InputStreamReader(new FileInputStream(path), encodeType))
         
         try {
         	result = new ArrayList<T>();
@@ -79,7 +94,7 @@ public class CommonUtil {
 	        	for(int i = 0 ; i < lineText.length ; i++) {
 	        		lineText[i] = lineText[i].trim();
 	        		lineText[i] = lineText[i].replaceAll("[\\(\\)\\[\\]]", "");
-	        		lineText[i] = lineText[i].replaceAll("^m", ",");
+	        		lineText[i] = lineText[i].replaceAll("\\^m", "\\,");
 	        		
 	        		if(columnList.size() == lineText.length) { 
 	        			map.put(columnList.get(i), lineText[i]);
@@ -91,6 +106,8 @@ public class CommonUtil {
 	        								+ columnList.get(columnList.size()-1) + "=======" + lineText[lineText.length-1]);
 	        		}
 	        	}
+	        	//System.out.println(item instanceof HashMap);
+	        	//break;
 	        	BeanUtils.populate(item, map);
 	        	result.add(item);											
 	        	//result.add(Arrays.asList(lineText));
@@ -225,15 +242,92 @@ public class CommonUtil {
 	    }
 	}
 	
-	
+	/*
+		ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		logger.setLevel(Level.toLevel("error"));
+	*/
 	public static void main(String[] args) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException {
-		String test = "test,";
-		System.out.println(test.substring(test.length()-1));
-		test += " ";
-		System.out.println(test.split(",")[1]);
+		ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		logger.setLevel(Level.toLevel("error"));
+		List<HashMap> data_list = new CommonUtil().readCsv("src/main/resources/kor_area_shelter.csv", "UTF-8", ",", "\"", null, HashMap.class);
+    	//소재지전체 주소
+    	/*
+    	 * 은행(농협 포함), 마트 및 마켓(농협파머스마켓), 주차장, 우체국, 
+    	 * 식당, 아파트 및 타운 및 맨션 및 타워, 전문대 및 대학 및 대학원, 학원 
+    	 * 군청, 수련회 및 수련원, 사회복지관 및 예술회관 및 센터 및 센타, 
+    	 * 사무소, 대피시설 및 대피소, 역, 교회, 성당, 웨딩,
+    	 * 상가 및 빌딩, 홈플러스 및 롯데마트 및 이마트 및 신세계 및 하나로 , 세무서, 체육관, 보건소, 도서관, 법원, 경찰, 
+    	 * 검찰, 호텔, 시장, 병원, 학교
+    	 * */
+    	//사업장명
+    	//좌표정보x
+    	//좌표정보y
+    	//개방자치단체코드
+    	//소재지면적
+		/*
+		String te = "tetete";
+		String tete = """
+						SELECT	* 
+						FROM %s
+						WHERE TEST = 'test';
+						""";
+		System.out.println(tete.formatted(te));
+		*/
+    	for(HashMap data : data_list) {
+    		//System.out.println(data.get("소재지면적"));
+    		System.out.println(data.get("소재지전체주소"));
+    		String test = String.join(" ", Arrays.asList(data.get("소재지전체주소").toString().split(" ") ).subList(0, 2));
+    		System.out.println(test);
+    		//System.out.println(data.get("좌표정보x"));
+    		//System.out.println(data.get("좌표정보y"));
+    		//System.out.println(data.get("개방자치단체코드"));
+    		String test_2 = data.get("사업장명").toString();
+    		String test_3 = test_2.lastIndexOf("센타") > 0 ? test_2:"false";
+    		System.out.println(data.get("사업장명"));
+    		System.out.println(test_3);
+    		test( data.get("사업장명").toString());
+    		//System.out.println(test_2.matches(".*[^주][^차][^장][아][파][트]*")); //아파트
+    		//System.out.println(test_2.matches(".*[주][차][장]*")); //주차장
+    		
+    		
+    				/*Arrays.asList( data.get("소재지전체주소").toString().split(" ") )
+    						.stream()
+    						.map(x -> ).collect(Collectors.toList());*/
+    		//for(String te : test) {
+    		//	System.out.println(te);
+    		//}
+    		
+    	}	
 	}
-
-	//public  appendNumber(long teagetNumber, int needZero, int digit) {
+	//금응 및 기타 행정기관//교육기관//마트//주거지//법정기관//기타 지역서비스//인명 및 치안//의료기관//
+	//주거 대여 서비스//종교//방송
+	/*
+	금응 및 기타 행정기관 	 : 은행, 우체국, 의회, 시청, 청사, 군청, 세무서, 농협
+	교육기관 			 	 : 학교, 전문대, 대학, 대학원, 학원, 수련원, 수련회
+	기타 상업시설		 	 : 마트, 홈플러스, 신세계, 시장, 상가, 웨딩, 식당, 빌딩
+	주거지 및 주거 대여 서비스	 : 아파트, 타운, 맨션, 타워, 주차장, 호텔, 모텔
+	법정기관			 	 : 법원, 검찰
+	기타 지역서비스		 	 : 도서관, 체육관, 사회복지관, 예술회관, 센터, 센타, 사무소, 대피시설, 대피소, 역 
+	의료서비스				 : 병원, 보건소
+	인명 및 치안			 : 경찰, 소방
+	종교시설				 : 교회, 성당, 불교
+	방송				 	 : 방송국
+	*/
+	public static String test(String data_list) {
+		String arr[] =  """
+						은행, 우체국, 의회, 시청, 청사, 군청, 세무서, 농협,
+						학교, 전문대, 대학, 대학원, 학원, 수련원, 수련회,
+						마트, 홈플러스, 신세계, 시장, 상가, 웨딩, 식당, 빌딩,
+						아파트, 타운, 맨션, 타워, 주차장, 호텔, 모텔,
+						법원, 검찰,
+						도서관, 체육관, 사회복지관, 예술회관, 복지센터, 아트센타, 사무소, 대피시설, 대피소, 역,
+						병원, 보건소,
+						경찰, 소방,
+						교회, 성당, 불교,
+						방송국,
+						""".replaceAll("\\n", "").trim().split(",");
 		
-	//}
+		System.out.println(arr);
+		return "";
+	}
 }
