@@ -273,19 +273,22 @@ public class CommonUtil {
 						""";
 		System.out.println(tete.formatted(te));
 		*/
+		int count = 0;
     	for(HashMap data : data_list) {
     		//System.out.println(data.get("소재지면적"));
-    		System.out.println(data.get("소재지전체주소"));
+    		//System.out.println(data.get("소재지전체주소"));
     		String test = String.join(" ", Arrays.asList(data.get("소재지전체주소").toString().split(" ") ).subList(0, 2));
-    		System.out.println(test);
+    		//System.out.println(test);
     		//System.out.println(data.get("좌표정보x"));
     		//System.out.println(data.get("좌표정보y"));
     		//System.out.println(data.get("개방자치단체코드"));
-    		String test_2 = data.get("사업장명").toString();
-    		String test_3 = test_2.lastIndexOf("센타") > 0 ? test_2:"false";
-    		System.out.println(data.get("사업장명"));
-    		System.out.println(test_3);
-    		test( data.get("사업장명").toString());
+    		//String test_2 = data.get("사업장명").toString();
+    		//String test_3 = test_2.lastIndexOf("센타") > 0 ? test_2:"false";
+    		//System.out.println(data.get("사업장명"));
+    		//System.out.println(test_3);
+    		if(test( data.get("사업장명").toString()).isEmpty()) {
+    			count ++;
+    		}
     		//System.out.println(test_2.matches(".*[^주][^차][^장][아][파][트]*")); //아파트
     		//System.out.println(test_2.matches(".*[주][차][장]*")); //주차장
     		
@@ -297,37 +300,55 @@ public class CommonUtil {
     		//	System.out.println(te);
     		//}
     		
-    	}	
+    	}
+    	System.out.println(count);
 	}
 	//금응 및 기타 행정기관//교육기관//마트//주거지//법정기관//기타 지역서비스//인명 및 치안//의료기관//
 	//주거 대여 서비스//종교//방송
 	/*
-	금응 및 기타 행정기관 	 : 은행, 우체국, 의회, 시청, 청사, 군청, 세무서, 농협
-	교육기관 			 	 : 학교, 전문대, 대학, 대학원, 학원, 수련원, 수련회
-	기타 상업시설		 	 : 마트, 홈플러스, 신세계, 시장, 상가, 웨딩, 식당, 빌딩
-	주거지 및 주거 대여 서비스	 : 아파트, 타운, 맨션, 타워, 주차장, 호텔, 모텔
-	법정기관			 	 : 법원, 검찰
-	기타 지역서비스		 	 : 도서관, 체육관, 사회복지관, 예술회관, 센터, 센타, 사무소, 대피시설, 대피소, 역 
-	의료서비스				 : 병원, 보건소
-	인명 및 치안			 : 경찰, 소방
-	종교시설				 : 교회, 성당, 불교
+	금응				 	 : 은행,세무서,농협,금고,보험,
+	행정기관				 : 교육청,우체국,의회,시청,청사,군청,구청,
+	교육기관 			 	 : 학교,전문대,대학,대학원,학원,수련원,수련회,교육원,유치원
+	기타 상업시설		 	 : 마트,홈플러스,신세계,시장,상가,웨딩,식당,빌딩,백화점
+	주거지 및 주거 대여 서비스	 : 아파트,타운,맨션,타워,주차장,호텔,모텔,단지,주택,빌라,오피스텔,리조트
+	법정기관			 	 : 법원,검찰
+	기타 지역서비스		 	 : 도서관,체육관,사회복지관,예술회관,복지센터,아트센타,사무소,대피시설,대피소,역,주민센터,회관,문화센터,체육센터,
+	의료서비스				 : 병원,보건소,의료,요양,복지,약국,약품,한의원
+	인명 및 치안			 : 경찰,소방
+	종교시설				 : 교회,성당,불교,
 	방송				 	 : 방송국
+	연구기관				 : 연구소, 연구원
 	*/
-	public static String test(String data_list) {
+	public static String test(String name) {
 		String arr[] =  """
-						은행, 우체국, 의회, 시청, 청사, 군청, 세무서, 농협,
-						학교, 전문대, 대학, 대학원, 학원, 수련원, 수련회,
-						마트, 홈플러스, 신세계, 시장, 상가, 웨딩, 식당, 빌딩,
-						아파트, 타운, 맨션, 타워, 주차장, 호텔, 모텔,
-						법원, 검찰,
-						도서관, 체육관, 사회복지관, 예술회관, 복지센터, 아트센타, 사무소, 대피시설, 대피소, 역,
-						병원, 보건소,
-						경찰, 소방,
-						교회, 성당, 불교,
-						방송국,
+						은행,세무서,농협,금고,보험,금융,
+						교육청,우체국,의회,시청,청사,군청,구청,
+						학교,전문대,대학,대학원,학원,수련원,수련회,교육원,유치원,수련관,학습관,
+						마트,홈플러스,신세계,시장,상가,웨딩,식당,빌딩,백화점,쇼핑,
+						아파트,타운,맨션,타워,주차장,호텔,모텔,단지,주택,빌라,오피스텔,리조트,푸르지오,그린빌,e편한세상,e-편한,
+						법원,검찰,
+						도서관,체육관,사회복지관,예술회관,복지센터,아트센타,사무소,대피시설,대피소,역,주민센터,회관,문화센터,체육센터,지원센터,지원청,
+						병원,보건소,의료,요양,복지,약국,약품,한의원,메디컬,
+						경찰,소방,
+						교회,성당,불교,
+						방송국,전화국,KT,LG,LGU,SK,sk,kt,lg,
+						연구소,연구원,연구센터
 						""".replaceAll("\\n", "").trim().split(",");
-		
-		System.out.println(arr);
-		return "";
+		int prevIndex = -1;
+		int targetArrIndex = -1;
+		String result = "";
+		for(int i = 0 ; i < arr.length ; i++) {
+			int nextIndex = name.lastIndexOf(arr[i]);
+			if(prevIndex < nextIndex && nextIndex != -1) {
+				prevIndex = nextIndex;
+				targetArrIndex = i;
+			}
+		}
+		result = targetArrIndex != -1 ? arr[targetArrIndex] : "";
+		if(targetArrIndex == -1) {
+			System.out.println(name);
+		}
+		//System.out.println(result);
+		return result;
 	}
 }
